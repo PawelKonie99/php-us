@@ -1,67 +1,93 @@
 <?php
 // KONTROLER strony kalkulatora
-require_once dirname(__FILE__).'/../config.php';
+require_once dirname(__FILE__) . "/../config.php";
 
 // W kontrolerze niczego nie wysyła się do klienta.
 // Wysłaniem odpowiedzi zajmie się odpowiedni widok.
 // Parametry do widoku przekazujemy przez zmienne.
 
+//ochrona kontrolera - poniższy skrypt przerwie przetwarzanie w tym punkcie gdy użytkownik jest niezalogowany
+include _ROOT_PATH . "/app/security/check.php";
+
+// function consolelog($data) {
+//     echo "<script>console.log('".$data."');</script>";
+// }
 // 1. pobranie parametrów
-
-$amount = $_REQUEST ['amount'];
-$period = $_REQUEST ['period'];
-$percent = $_REQUEST ['percent'];
-
-
-// 2. walidacja parametrów z przygotowaniem zmiennych dla widoku
-
-// sprawdzenie, czy parametry zostały przekazane
-if ( ! (isset($amount) && isset($period) && isset($percent))) {
-	//sytuacja wystąpi kiedy np. kontroler zostanie wywołany bezpośrednio - nie z formularza
-	$errors [] = 'Błędne wywołanie aplikacji. Brak jednego z parametrów.';
-    console.log('elo');
+function getParams(&$amount, &$period, &$percent)
+{
+    $amount = isset($_REQUEST["amount"]) ? $_REQUEST["amount"] : null;
+    $period = isset($_REQUEST["period"]) ? $_REQUEST["period"] : null;
+    $percent = isset($_REQUEST["percent"]) ? $_REQUEST["percent"] : null;
 }
 
-// sprawdzenie, czy potrzebne wartości zostały przekazane
-if ( $amount == "") {
-	$errors [] = 'Nie podano kwoty kredytu';
-}
-if ( $period == "") {
-	$errors [] = 'Nie podano okresu kredytowania';
-}
-if ( $percent == "") {
-	$errors [] = 'Nie podano procentu kredytowania';
-}
 
-//nie ma sensu walidować dalej gdy brak parametrów
-if (empty( $errors )) {
-	
-	// sprawdzenie, czy $x i $y są liczbami całkowitymi
-	if (! is_numeric( $amount )) {
-		$errors [] = 'Pierwsza wartość nie jest liczbą całkowitą';
-	}
-	
-	if (! is_numeric( $period )) {
-		$errors [] = 'Druga wartość nie jest liczbą całkowitą';
-	}	
+function validate(&$amount, &$period, &$percent, &$errors)
+{
+    // sprawdzenie, czy parametry zostały przekazane
+    if (!(isset($amount) && isset($period) && isset($percent))) {
+        // sytuacja wystąpi kiedy np. kontroler zostanie wywołany bezpośrednio - nie z formularza
+        // teraz zakładamy, ze nie jest to błąd. Po prostu nie wykonamy obliczeń
+        return false;
+    }
 
-	if (! is_numeric( $percent )) {
-		$errors [] = 'Trzecia wartość nie jest liczbą całkowitą';
-	}	
+    if ($amount == "") {
+        $errors[] = "Nie podano kwoty kredytu";
+    }
+    if ($period == "") {
+        $errors[] = "Nie podano okresu kredytowania";
+    }
+    if ($percent == "") {
+        $errors[] = "Nie podano procentu kredytowania";
+    }
 
+    //nie ma sensu walidować dalej gdy brak parametrów
+    if (count($errors) != 0) {
+        return false;
+    }
+
+    // sprawdzenie, czy $x i $y są liczbami całkowitymi
+    if (!is_numeric($amount)) {
+        $errors[] = "Pierwsza wartość nie jest liczbą całkowitą";
+    }
+
+    if (!is_numeric($period)) {
+        $errors[] = "Druga wartość nie jest liczbą całkowitą";
+    }
+
+    if (!is_numeric($percent)) {
+        $errors[] = "Trzecia wartość nie jest liczbą całkowitą";
+    }
+
+    return true;
 }
 
 // 3. wykonaj zadanie jeśli wszystko w porządku
 
-if (empty ( $errors )) { // gdy brak błędów
-	
-	//konwersja parametrów na int
-	$amount = floatval($amount);
-	$period = floatval($period);
-	$percent = floatval($percent);
+function process(&$amount, &$period, &$percent, &$errors, &$monthNumber)
+{
+    // gdy brak błędów
 
-    $monthNumber = ($amount + ($amount * ($percent / 100))) / ($period * 12);
+    //konwersja parametrów na int
+    $amount = floatval($amount);
+    $period = floatval($period);
+    $percent = floatval($percent);
+
+    $monthNumber = ($amount + $amount * ($percent / 100)) / ($period * 12);
+}
+
+//definicja zmiennych kontrolera
+$x = null;
+$y = null;
+$operation = null;
+$monthNumber = null;
+$errors = array();
+
+getParams($amount, $period, $percent);
+
+if (validate($amount, $period, $percent, $errors)) {
+    // gdy brak błędów
+    process($amount, $period, $percent, $errors, $monthNumber);
 }
 
 
-include 'credit_view.php';
+include "credit_view.php";
