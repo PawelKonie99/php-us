@@ -28,7 +28,7 @@ include _ROOT_PATH.'/templates/top.php';
             <input id="id_yperiod" type="text" name="period" value="<?php print $period; ?>" /><br />
             <label for="id_percent">Oprocentowanie (%)</label>
             <input id="id_percent" type="text" name="percent" value="<?php print $percent; ?>" /><br />
-            <input type="submit" value="Oblicz" />
+            <button type="submit" class="pure-button">Oblicz</button>
         </form>
 
         <?php //wyświeltenie listy błędów, jeśli istnieją
