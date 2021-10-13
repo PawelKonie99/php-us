@@ -1,4 +1,9 @@
 <?php require_once dirname(__FILE__) . "/../config.php"; ?>
+
+<?php //góra strony z szablonu 
+include _ROOT_PATH.'/templates/top.php';
+?>
+
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
 
@@ -7,10 +12,10 @@
     <title>Kalkulator</title>
 </head>
 
-<div style="width:90%; margin: 2em auto;">
+<!-- <div style="width:90%; margin: 2em auto;">
     <a href="/app/inna_chroniona.php" class="pure-button">kolejna chroniona strona</a>
     <a href="/app/security/logout.php" class="pure-button pure-button-active">Wyloguj</a>
-</div>
+</div> -->
 
 <div style="width:90%; margin: 2em auto;">
 
@@ -51,5 +56,8 @@ echo "Miesięczna rata: " . $monthNumber;
 
 
     </body>
+    <?php //dół strony z szablonu 
+include _ROOT_PATH.'/templates/bottom.php';
+?>
 
 </html>

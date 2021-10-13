@@ -7,7 +7,7 @@ require_once dirname(__FILE__) . "/../config.php";
 // Parametry do widoku przekazujemy przez zmienne.
 
 //ochrona kontrolera - poniższy skrypt przerwie przetwarzanie w tym punkcie gdy użytkownik jest niezalogowany
-include _ROOT_PATH . "/app/security/check.php";
+// include _ROOT_PATH . "/app/security/check.php";
 
 // function consolelog($data) {
 //     echo "<script>console.log('".$data."');</script>";
@@ -88,6 +88,12 @@ if (validate($amount, $period, $percent, $errors)) {
     // gdy brak błędów
     process($amount, $period, $percent, $errors, $monthNumber);
 }
+
+
+$page_title = 'Kredyt';
+$page_description = 'test1';
+$page_header = 'Proste szablony';
+$page_footer = 'przykładowa tresć stopki wpisana do szablonu z kontrolera';
 
 
 include "credit_view.php";
